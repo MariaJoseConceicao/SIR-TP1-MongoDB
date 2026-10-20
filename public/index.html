@@ -9,29 +9,12 @@
 </head>
 
 <body>
+
     <h1>Alunos</h1>
 
-    <h2>Criar / Editar Aluno</h2>
-
-    <div id="criar">
-        <form id="formCriar">
-            <label for="nome">Nome Aluno:</label>
-            <input type="text" id="nome" placeholder="Nome do aluno" required>
-
-            <label for="apelido">Apelido Aluno:</label>
-            <input type="text" id="apelido" placeholder="Apelido do aluno" required>
-
-            <label for="idCurso">Curso:</label>
-            <select id="idCurso" required>
-                <option value="">Seleciona um curso</option>
-            </select>
-
-            <label for="anoCurricular">Ano Curricular:</label>
-            <input type="number" id="anoCurricular" placeholder="Ano curricular" min="1" required>
-
-            <button type="button" id="btcriar">Criar Aluno</button>
-            <button type="button" id="btCancelarEdicao" style="display:none;">Cancelar edição</button>
-        </form>
+    <div class="barra-topo">
+        <button id="idCriarAluno">Criar Aluno</button>
+        <button id="idCriarCurso">Criar Curso</button>
     </div>
 
     <h2>Lista de Alunos</h2>
@@ -48,5 +31,50 @@
         </thead>
         <tbody id="alunos"></tbody>
     </table>
+
+    <!-- MODAL: CRIAR / EDITAR ALUNO -->
+    <dialog id="modalAluno">
+        <h2 id="tituloModalAluno">Criar Aluno</h2>
+
+        <form id="formCriar">
+            <label for="nome">Nome Aluno:</label>
+            <input type="text" id="nome" placeholder="Nome do aluno" required>
+
+            <label for="apelido">Apelido Aluno:</label>
+            <input type="text" id="apelido" placeholder="Apelido do aluno" required>
+
+            <label for="idCurso">Curso:</label>
+            <select id="idCurso" required>
+                <option value="">Seleciona um curso</option>
+            </select>
+
+            <label for="anoCurricular">Ano Curricular:</label>
+            <input type="number" id="anoCurricular" placeholder="Ano curricular" min="1" required>
+
+            <div class="botoes-modal">
+                <button type="button" id="btcriar">Criar Aluno</button>
+                <button type="button" id="btCancelarEdicao">Cancelar</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- MODAL: CRIAR CURSO -->
+    <dialog id="modalCurso">
+        <h2>Criar Curso</h2>
+
+        <form id="formCriarCurso">
+            <label for="nomeCurso">Nome do Curso:</label>
+            <input type="text" id="nomeCurso" placeholder="Nome do curso" required>
+
+            <label for="coordenador">Coordenador:</label>
+            <input type="text" id="coordenador" placeholder="Coordenador" required>
+
+            <div class="botoes-modal">
+                <button type="button" id="btcriarCurso">Criar Curso</button>
+                <button type="button" id="btCancelarCurso">Cancelar</button>
+            </div>
+        </form>
+    </dialog>
+
 </body>
 </html>

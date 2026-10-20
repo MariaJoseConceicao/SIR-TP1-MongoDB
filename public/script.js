@@ -1,5 +1,10 @@
 let alunoEmEdicao = null;
 
+const modalAluno = document.getElementById("modalAluno");
+const modalCurso = document.getElementById("modalCurso");
+
+/* ---------- PEDIDOS À API ---------- */
+
 async function getAlunos() {
     const response = await fetch("/alunos");
 
@@ -19,6 +24,47 @@ async function getCursos() {
 
     return response.json();
 }
+
+/* ---------- MODAIS ---------- */
+
+function prepararFormAluno() {
+    alunoEmEdicao = null;
+
+    document.getElementById("formCriar").reset();
+    document.getElementById("tituloModalAluno").textContent = "Criar Aluno";
+    document.getElementById("btcriar").textContent = "Criar Aluno";
+}
+
+function abrirModalCriarAluno() {
+    prepararFormAluno();
+    modalAluno.showModal();
+}
+
+function abrirModalCriarCurso() {
+    document.getElementById("formCriarCurso").reset();
+    modalCurso.showModal();
+}
+
+// Sempre que o modal fecha (botão, Esc ou depois de guardar), volta ao modo "criar"
+modalAluno.addEventListener("close", prepararFormAluno);
+
+document
+    .getElementById("idCriarAluno")
+    .addEventListener("click", abrirModalCriarAluno);
+
+document
+    .getElementById("idCriarCurso")
+    .addEventListener("click", abrirModalCriarCurso);
+
+document
+    .getElementById("btCancelarEdicao")
+    .addEventListener("click", () => modalAluno.close());
+
+document
+    .getElementById("btCancelarCurso")
+    .addEventListener("click", () => modalCurso.close());
+
+/* ---------- CURSOS ---------- */
 
 async function carregarCursos() {
     try {
@@ -45,6 +91,45 @@ async function carregarCursos() {
         alert("Não foi possível carregar os cursos.");
     }
 }
+
+async function addCurso() {
+    const cursos = await getCursos();
+
+    const idsNumericos = cursos
+        .map((curso) => Number(curso._id))
+        .filter((id) => Number.isInteger(id));
+
+    const proximoId =
+        idsNumericos.length > 0
+            ? Math.max(...idsNumericos) + 1
+            : 1;
+
+    const curso = {
+        _id: String(proximoId),
+        nomeDoCurso: document.getElementById("nomeCurso").value,
+        coordenador: document.getElementById("coordenador").value
+    };
+
+    const response = await fetch("/cursos", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(curso)
+    });
+
+    if (!response.ok) {
+        throw new Error("Erro ao criar curso");
+    }
+
+    document.getElementById("formCriarCurso").reset();
+    modalCurso.close();
+
+    await carregarCursos();
+    await mostraAlunos();
+}
+
+/* ---------- ALUNOS ---------- */
 
 async function addAluno() {
     const alunos = await getAlunos();
@@ -80,7 +165,7 @@ async function addAluno() {
         throw new Error("Erro ao criar aluno");
     }
 
-    document.getElementById("formCriar").reset();
+    modalAluno.close();
 
     await mostraAlunos();
 }
@@ -107,11 +192,7 @@ async function updateAluno(id) {
         throw new Error("Erro ao atualizar aluno");
     }
 
-    alunoEmEdicao = null;
-
-    document.getElementById("formCriar").reset();
-    document.getElementById("btcriar").textContent = "Criar Aluno";
-    document.getElementById("btCancelarEdicao").style.display = "none";
+    modalAluno.close();
 
     await mostraAlunos();
 }
@@ -142,16 +223,10 @@ function editarAluno(aluno) {
     document.getElementById("idCurso").value = aluno.idCurso;
     document.getElementById("anoCurricular").value = aluno.anoCurricular;
 
+    document.getElementById("tituloModalAluno").textContent = "Editar Aluno";
     document.getElementById("btcriar").textContent = "Atualizar Aluno";
-    document.getElementById("btCancelarEdicao").style.display = "inline";
-}
 
-function cancelarEdicao() {
-    alunoEmEdicao = null;
-
-    document.getElementById("formCriar").reset();
-    document.getElementById("btcriar").textContent = "Criar Aluno";
-    document.getElementById("btCancelarEdicao").style.display = "none";
+    modalAluno.showModal();
 }
 
 async function mostraAlunos() {
@@ -215,6 +290,8 @@ async function mostraAlunos() {
     }
 }
 
+/* ---------- BOTÕES DE GUARDAR ---------- */
+
 document.getElementById("btcriar").addEventListener("click", async () => {
     try {
         if (alunoEmEdicao === null) {
@@ -228,9 +305,14 @@ document.getElementById("btcriar").addEventListener("click", async () => {
     }
 });
 
-document
-    .getElementById("btCancelarEdicao")
-    .addEventListener("click", cancelarEdicao);
+document.getElementById("btcriarCurso").addEventListener("click", async () => {
+    try {
+        await addCurso();
+    } catch (erro) {
+        console.error(erro);
+        alert("Ocorreu um erro ao guardar o curso.");
+    }
+});
 
 carregarCursos();
 mostraAlunos();

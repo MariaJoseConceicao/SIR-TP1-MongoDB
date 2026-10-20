@@ -13,6 +13,11 @@ body {
     background: linear-gradient(135deg, #eef2ff, #f8fafc);
 }
 
+/* Bloqueia o scroll da página quando há um modal aberto */
+body:has(dialog[open]) {
+    overflow: hidden;
+}
+
 h1 {
     max-width: 1100px;
     margin: 0 auto 30px;
@@ -30,38 +35,176 @@ h2 {
     font-size: 24px;
 }
 
-#criar {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 25px;
+/* ========== BOTÕES (BASE) ========== */
 
-    background-color: white;
-    border-radius: 14px;
-    box-shadow: 0 8px 25px rgba(30, 64, 175, 0.12);
+button {
+    min-height: 42px;
+    padding: 0 18px;
+
+    border: none;
+    border-radius: 10px;
+
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+
+    transition: background-color 0.2s, transform 0.15s, box-shadow 0.2s;
 }
 
-#formCriar {
+button:hover {
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+button:focus-visible {
+    outline: 3px solid rgba(37, 99, 235, 0.35);
+    outline-offset: 2px;
+}
+
+/* ========== BARRA COM OS BOTÕES DO TOPO ========== */
+
+.barra-topo {
+    max-width: 1100px;
+    margin: 0 auto 10px;
+
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 12px;
+}
+
+#idCriarAluno,
+#idCriarCurso {
+    min-height: 46px;
+    padding: 0 24px;
+
+    display: inline-flex;
     align-items: center;
+    gap: 8px;
+
+    color: white;
+    font-size: 15px;
+}
+
+#idCriarAluno::before,
+#idCriarCurso::before {
+    content: "+";
+    font-size: 20px;
+    line-height: 1;
+}
+
+#idCriarAluno {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+}
+
+#idCriarAluno:hover {
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.45);
+}
+
+#idCriarCurso {
+    background: linear-gradient(135deg, #10b981, #059669);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
+}
+
+#idCriarCurso:hover {
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.45);
+}
+
+/* ========== MODAIS ========== */
+
+dialog {
+    width: min(92vw, 460px);
+    padding: 28px;
+
+    border: none;
+    border-radius: 18px;
+    background-color: white;
+    color: #1f2937;
+
+    box-shadow: 0 25px 60px rgba(15, 23, 42, 0.35);
+}
+
+dialog[open] {
+    animation: modal-entrada 0.25s ease-out;
+}
+
+dialog::backdrop {
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(3px);
+}
+
+dialog[open]::backdrop {
+    animation: fundo-entrada 0.25s ease-out;
+}
+
+@keyframes modal-entrada {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes fundo-entrada {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+dialog h2 {
+    margin: 0 0 20px;
+    padding-bottom: 14px;
+
+    border-bottom: 2px solid #e0e7ff;
+
+    color: #1e3a8a;
+    font-size: 22px;
+}
+
+dialog form {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+dialog label {
+    margin-top: 8px;
+
+    color: #475569;
+    font-size: 13px;
+    font-weight: bold;
 }
 
 input,
 select {
-    flex: 1;
-    min-width: 180px;
-    height: 42px;
+    height: 44px;
     padding: 0 12px;
 
     border: 1px solid #cbd5e1;
-    border-radius: 8px;
+    border-radius: 10px;
     background-color: #f8fafc;
 
     font-size: 15px;
     color: #1f2937;
 
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+
+dialog input,
+dialog select {
+    width: 100%;
 }
 
 input:focus,
@@ -72,41 +215,53 @@ select:focus {
     background-color: white;
 }
 
-button {
-    min-height: 42px;
-    padding: 0 16px;
+.botoes-modal {
+    margin-top: 22px;
 
-    border: none;
-    border-radius: 8px;
-
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-
-    transition: background-color 0.2s, transform 0.2s;
+    display: flex;
+    gap: 10px;
 }
 
-button:hover {
-    transform: translateY(-1px);
+.botoes-modal button {
+    flex: 1;
 }
 
-#btcriar {
-    background-color: #2563eb;
+/* Botão principal do modal (guardar) */
+#btcriar,
+#btcriarCurso {
     color: white;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
 
-#btcriar:hover {
-    background-color: #1d4ed8;
+#btcriar:hover,
+#btcriarCurso:hover {
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
 }
 
-#btCancelarEdicao {
-    background-color: #64748b;
-    color: white;
+#btcriarCurso {
+    background: linear-gradient(135deg, #10b981, #059669);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
-#btCancelarEdicao:hover {
-    background-color: #475569;
+#btcriarCurso:hover {
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
 }
+
+/* Botão secundário do modal (cancelar) */
+#btCancelarEdicao,
+#btCancelarCurso {
+    color: #475569;
+    background-color: #f1f5f9;
+    border: 1px solid #cbd5e1;
+}
+
+#btCancelarEdicao:hover,
+#btCancelarCurso:hover {
+    background-color: #e2e8f0;
+}
+
+/* ========== TABELA ========== */
 
 table {
     width: 100%;
@@ -155,31 +310,35 @@ tbody tr:last-child td {
     border-bottom: none;
 }
 
+/* Botões Editar / Apagar na tabela (estilo suave) */
 td button {
     min-height: 34px;
     margin-right: 6px;
-    padding: 0 11px;
+    padding: 0 14px;
 
+    border-radius: 8px;
     font-size: 13px;
 }
 
 td button:first-child {
-    background-color: #f59e0b;
-    color: white;
+    background-color: #fef3c7;
+    color: #b45309;
 }
 
 td button:first-child:hover {
-    background-color: #d97706;
+    background-color: #fde68a;
 }
 
 td button:last-child {
-    background-color: #dc2626;
-    color: white;
+    background-color: #fee2e2;
+    color: #b91c1c;
 }
 
 td button:last-child:hover {
-    background-color: #b91c1c;
+    background-color: #fecaca;
 }
+
+/* ========== TELEMÓVEL ========== */
 
 @media (max-width: 700px) {
     body {
@@ -194,16 +353,17 @@ td button:last-child:hover {
         font-size: 21px;
     }
 
-    #criar {
-        padding: 18px;
+    .barra-topo button {
+        width: 100%;
+        justify-content: center;
     }
 
-    input,
-    select,
-    #btcriar,
-    #btCancelarEdicao {
-        width: 100%;
-        min-width: 100%;
+    dialog {
+        padding: 20px;
+    }
+
+    .botoes-modal {
+        flex-direction: column-reverse;
     }
 
     table {
