@@ -1,12 +1,14 @@
 let alunoEmEdicao = null;
 
+const API_URL = "https://sir-tp1-mongodb.onrender.com";
+
 const modalAluno = document.getElementById("modalAluno");
 const modalCurso = document.getElementById("modalCurso");
 
 /* ---------- PEDIDOS À API ---------- */
 
 async function getAlunos() {
-    const response = await fetch("/alunos");
+    const response = await fetch(`${API_URL}/alunos`);
 
     if (!response.ok) {
         throw new Error("Erro ao carregar alunos");
@@ -16,7 +18,7 @@ async function getAlunos() {
 }
 
 async function getCursos() {
-    const response = await fetch("/cursos");
+    const response = await fetch(`${API_URL}/cursos`);
 
     if (!response.ok) {
         throw new Error("Erro ao carregar cursos");
@@ -45,7 +47,7 @@ function abrirModalCriarCurso() {
     modalCurso.showModal();
 }
 
-// Sempre que o modal fecha (botão, Esc ou depois de guardar), volta ao modo "criar"
+// Sempre que o modal fecha, volta ao modo "criar"
 modalAluno.addEventListener("close", prepararFormAluno);
 
 document
@@ -110,7 +112,7 @@ async function addCurso() {
         coordenador: document.getElementById("coordenador").value
     };
 
-    const response = await fetch("/cursos", {
+    const response = await fetch(`${API_URL}/cursos`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -153,7 +155,7 @@ async function addAluno() {
         )
     };
 
-    const response = await fetch("/alunos", {
+    const response = await fetch(`${API_URL}/alunos`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -180,7 +182,7 @@ async function updateAluno(id) {
         )
     };
 
-    const response = await fetch(`/alunos/${id}`, {
+    const response = await fetch(`${API_URL}/alunos/${id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
@@ -198,13 +200,15 @@ async function updateAluno(id) {
 }
 
 async function deleteAluno(id) {
-    const confirmar = confirm("Tens a certeza que queres apagar este aluno?");
+    const confirmar = confirm(
+        "Tens a certeza que queres apagar este aluno?"
+    );
 
     if (!confirmar) {
         return;
     }
 
-    const response = await fetch(`/alunos/${id}`, {
+    const response = await fetch(`${API_URL}/alunos/${id}`, {
         method: "DELETE"
     });
 
@@ -313,6 +317,8 @@ document.getElementById("btcriarCurso").addEventListener("click", async () => {
         alert("Ocorreu um erro ao guardar o curso.");
     }
 });
+
+/* ---------- INICIALIZAÇÃO ---------- */
 
 carregarCursos();
 mostraAlunos();
