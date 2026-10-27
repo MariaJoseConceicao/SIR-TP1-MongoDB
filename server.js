@@ -11,6 +11,7 @@ app.use(express.json());
 
 /*app.use(express.static(path.join(__dirname, "public")));*/
 
+
 /* ---------- MODELOS ---------- */
 
 // _id definido como String porque o script.js envia ids como "1", "2", ...
